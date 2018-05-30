@@ -38,7 +38,7 @@ static struct argp_option options[] = {
   { "interval", 'i', "N", 0, "seconds between periodic ICMP packets" },
   { "interface", 'I', "INTERFACE", 0, "bind to specified interface" },
   { "debug", 'd', 0, 0, "show debug message" },
-	{ "help", 'h', 0, 0, "show help information" },
+  { "help", 'h', 0, 0, "show help information" },
   { 0 }
 };
 
@@ -64,7 +64,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
       break;
     case 'I':
       arguments->interface = arg;
-    	break;
+      break;
     case 'Q':
       arguments->tos = atoi(arg);
       break;
@@ -79,10 +79,10 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
       break;
     case ARGP_KEY_ARG:
       // too many arguments
-    	if (state->arg_num > 1)
+      if (state->arg_num > 1)
         argp_usage(state);
       arguments->destination = arg;
-    	break;
+      break;
     case ARGP_KEY_END:
       // too few arguments
       if (state->arg_num < 1 || arguments->interface == NULL)

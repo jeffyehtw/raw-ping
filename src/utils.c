@@ -87,29 +87,29 @@ uint16_t icmp_checksum(struct icmp *icmphdr, uint8_t *payload, int payload_len)
     check_len++;
   }
 
-  return checksum ((uint16_t *) buf, check_len);
+  return checksum((uint16_t *) buf, check_len);
 }
 
 uint16_t checksum(uint16_t *addr, int len) {
-    // var
-    int count = len;
-    uint16_t res;
-    register uint32_t sum = 0;
+  // variables
+  int count = len;
+  uint16_t res;
+  register uint32_t sum = 0;
 
-    while (count > 1) {
-        sum += *(addr++);
-        count -= 2;
-    }
+  while (count > 1) {
+    sum += *(addr++);
+    count -= 2;
+  }
 
-    if (count > 0) {
-        sum += *(uint8_t *)addr;
-    }
+  if (count > 0) {
+    sum += *(uint8_t *)addr;
+  }
 
-    while (sum >> 16) {
-        sum = (sum & 0xffff) + (sum >> 16);
-    }
+  while (sum >> 16) {
+    sum = (sum & 0xffff) + (sum >> 16);
+  }
 
-    res = ~sum;
+  res = ~sum;
 
-    return res;
+  return res;
 }

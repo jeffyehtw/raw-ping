@@ -83,30 +83,30 @@ int get_ip_checksum(struct ip *self) {
 
 void set_ip_src_addr(struct ip *self, char *val) {
   if (inet_pton(AF_INET, val, &(self->ip_src)) != 1) {
-		perror("inet_pton()");
-		exit(EXIT_FAILURE);
-	}
+    perror("inet_pton()");
+    exit(EXIT_FAILURE);
+  }
 }
 
 void get_ip_src_addr(struct ip *self, char *val) {
   if (inet_ntop(AF_INET, &(self->ip_src), val, INET_ADDRSTRLEN)) {
-		perror("inet_pton()");
-		exit(EXIT_FAILURE);
-	}
+    perror("inet_pton()");
+    exit(EXIT_FAILURE);
+  }
 }
 
 void set_ip_dst_addr(struct ip *self, char *val) {
-	if (inet_pton(AF_INET, val, &(self->ip_dst)) != 1) {
-		perror("inet_pton()");
-		exit(EXIT_FAILURE);
-	}
+  if (inet_pton(AF_INET, val, &(self->ip_dst)) != 1) {
+    perror("inet_pton()");
+    exit(EXIT_FAILURE);
+  }
 }
 
 void get_ip_dst_addr(struct ip *self, char *val) {
   if (inet_ntop(AF_INET, &(self->ip_dst), val, INET_ADDRSTRLEN)) {
-		perror("inet_pton()");
-		exit(EXIT_FAILURE);
-	}
+    perror("inet_pton()");
+    exit(EXIT_FAILURE);
+  }
 }
 
 void set_icmp_type(struct icmp *self, int val) {
