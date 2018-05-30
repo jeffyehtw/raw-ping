@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
   // variables
   int fd;
   int bytes;
-  int status;
+  int status = 0;
   const int on = 1;
 
   // statistic var
@@ -285,16 +285,18 @@ int main(int argc, char **argv) {
       }
     }
 
-    min_rtt = dt < min_rtt ? dt : min_rtt;
-    max_rtt = dt > max_rtt ? dt : max_rtt;
+    if (status != EAGAIN) {
+      min_rtt = dt < min_rtt ? dt : min_rtt;
+      max_rtt = dt > max_rtt ? dt : max_rtt;
 
-    printf("%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
+      printf("%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
       bytes, arguments.destination, get_icmp_seq(recv_icmph),
       get_ip_ttl(recv_iph), dt);
 
-    fflush(stdout);
+      fflush(stdout);
 
-    sum_rtt += dt;
+      sum_rtt += dt;
+    }
 
     usleep(arguments.interval * 1000 * 1000);
   }
@@ -304,8 +306,10 @@ int main(int argc, char **argv) {
   printf("%d packets transmitted, %d received, %d%% packet loss\n",
     arguments.count, arguments.count - loss,
     loss * 100 / arguments.count);
-  printf("rtt min/avg/max = %.3f/%.3f/%.3f ms\n",
-    min_rtt, sum_rtt / arguments.count, max_rtt);
+
+  if (arguments.count - loss > 0)
+    printf("rtt min/avg/max = %.3f/%.3f/%.3f ms\n",
+      min_rtt, sum_rtt / arguments.count, max_rtt);
 
   fflush(stdout);
 
