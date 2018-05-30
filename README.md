@@ -1,2 +1,2 @@
 # ping
-Implement Linux ping command by raw socket
+> Implement Linux ping command with C
