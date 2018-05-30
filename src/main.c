@@ -299,9 +299,11 @@ int main(int argc, char **argv) {
     usleep(arguments.interval * 1000 * 1000);
   }
 
-  // show state
-  printf("%d packets transmitted, %d received, %.2f packet loss\n",
-    arguments.count, arguments.count - loss, loss / (double) arguments.count);
+  // show statisics
+  printf("\n--- %s ping statistics ---\n", arguments.destination);
+  printf("%d packets transmitted, %d received, %d%% packet loss\n",
+    arguments.count, arguments.count - loss,
+    loss * 100 / arguments.count);
   printf("rtt min/avg/max = %.3f/%.3f/%.3f ms\n",
     min_rtt, sum_rtt / arguments.count, max_rtt);
 
