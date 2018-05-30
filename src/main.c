@@ -27,7 +27,7 @@ const char *argp_program_bug_address = "<cjyeh@cs.nctu.edu.tw>";
 
 // documents of program
 static char doc[] = "\nping";
-static char args_doc[] = "\nImplement Linux ping command with C";
+static char args_doc[] = "";
 
 // options of arguments
 static struct argp_option options[] = {
