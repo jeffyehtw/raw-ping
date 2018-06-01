@@ -31,22 +31,24 @@ static char args_doc[] = "";
 
 // options of arguments
 static struct argp_option options[] = {
-  { "verbose", 'v', 0, 0, "Produce verbose output" },
-  { "tos", 'Q', "N", 0, "set type of service field in IP" },
   { "count", 'c', "N", 0, "count of probing packets" },
-  { "ttl", 't', "N", 0, "set time to live field in IP" },
+  { "debug", 'd', 0, 0, "show debug message" },
   { "interval", 'i', "N", 0, "seconds between periodic ICMP packets" },
   { "interface", 'I', "INTERFACE", 0, "bind to specified interface" },
-  { "debug", 'd', 0, 0, "show debug message" },
+  { "tos", 'Q', "N", 0, "set type of service field in IP" },
+  { "size", 's', "N", 0, "set packet size" },
+  { "ttl", 't', "N", 0, "set time to live field in IP" },
+  { "verbose", 'v', 0, 0, "produce verbose output" },
   { "help", 'h', 0, 0, "show help information" },
   { 0 }
 };
 
 struct arguments {
-  int tos;
-  int ttl;
   int count;
   int debug;
+  int size;
+  int tos;
+  int ttl;
   double interval;
   char *interface;
   char *source;
@@ -59,6 +61,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   struct arguments *arguments = state->input;
 
   switch (key) {
+    case 'c':
+      arguments->count = atoi(arg);
+      break;
     case 'i':
       arguments->interval = atof(arg);
       break;
@@ -68,11 +73,11 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     case 'Q':
       arguments->tos = atoi(arg);
       break;
+    case 's':
+      arguments->size = atoi(arg);
+      break;
     case 't':
       arguments->ttl = atoi(arg);
-      break;
-    case 'c':
-      arguments->count = atoi(arg);
       break;
     case 'h':
       argp_state_help(state, stdout, ARGP_HELP_STD_HELP);
@@ -132,10 +137,11 @@ int main(int argc, char **argv) {
   struct timeval wait;
 
   // set default arguments val
-  arguments.ttl = 64;
-  arguments.count = 10;
+  arguments.count = INT_MAX;
   arguments.interval = 1;
   arguments.interface = NULL;
+  arguments.size = 56;
+  arguments.ttl = 64;
   arguments.source = allocate_strmem(INET_ADDRSTRLEN);
 
   // parse arguments
@@ -199,7 +205,7 @@ int main(int argc, char **argv) {
   set_ip_ver(send_iph, 4);
   set_ip_hlen(send_iph, IP_HDR_LEN / sizeof(uint32_t));
   set_ip_dscp(send_iph, arguments.tos);
-  set_ip_len(send_iph, IP_HDR_LEN + ICMP_HDR_LEN + DATA_LEN);
+  set_ip_len(send_iph, IP_HDR_LEN + arguments.size);
   set_ip_id(send_iph, 0);
   set_ip_frag_off(send_iph);
   set_ip_ttl(send_iph, arguments.ttl);
@@ -228,7 +234,8 @@ int main(int argc, char **argv) {
 
   // show info
   printf("PING %s (%s) %d(%d) bytes of data.\n",
-    arguments.destination, arguments.destination, DATA_LEN, FRAME_LEN);
+    arguments.destination, arguments.destination,
+    arguments.size, IP_HDR_LEN + arguments.size);
 
   // send probing packets
   for (int i = 1; i <= arguments.count; i++) {
@@ -238,9 +245,9 @@ int main(int argc, char **argv) {
     struct timeval t2;
 
     set_icmp_seq(send_icmph, i);
-    set_icmp_sum(send_icmph, ICMP_HDR_LEN + DATA_LEN);
+    set_icmp_sum(send_icmph, arguments.size);
 
-    if ((bytes = sendto(fd, request, FRAME_LEN, 0, (struct sockaddr *) &dev, sizeof(dev))) <= 0) {
+    if ((bytes = sendto(fd, request, IP_HDR_LEN + arguments.size, 0, (struct sockaddr *) &dev, sizeof(dev))) <= 0) {
       perror("sendto()");
       exit(EXIT_FAILURE);
     }
