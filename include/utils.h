@@ -19,4 +19,6 @@ uint16_t icmp_checksum(struct icmp *, uint8_t *, int);
 
 uint16_t checksum(uint16_t *, int);
 
+void print_packet(const uint8_t *, int);
+
 #endif

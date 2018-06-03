@@ -113,3 +113,13 @@ uint16_t checksum(uint16_t *addr, int len) {
 
   return res;
 }
+
+void print_packet(const uint8_t *self, int len) {
+  for (int i = 0; i < len; i++) {
+    if (i > 0 && i % 16 == 0) {
+      printf("\n");
+    }
+    printf(" %02x", *(self + i));
+  }
+  printf("\n");
+}
