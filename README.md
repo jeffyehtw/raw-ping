@@ -1,19 +1,22 @@
-# ping
+# raw-ping
 > Implement Linux ping command with C
 
-## Note
+### Requirements
+- gcc
+
+### Introduction
 This tool is implement by using raw socket. ```Root``` permission and specified network interface are required for execution.
 
-## Compile
-Clone this repository
-```
-git clone https://github.com/yehcj/ping.git
-```
+### Build
 Compile
 ```
 make
 ```
 
-## Todo
-* Deadline option
-* Packet size option
+### Usages
+```
+sudo ./raw-ping -I interface destination
+```
+
+### Version
+v1.1

@@ -5,8 +5,8 @@ TARGET = \
 	src/utils.c \
 	src/network.c \
 
-ping: $(TARGET)
+raw-ping: $(TARGET)
 	$(CC) $^ -o $@ $(CFLAGS) -O3 -static
 
 clean:
-	rm -rf ping
+	rm -rf raw-ping

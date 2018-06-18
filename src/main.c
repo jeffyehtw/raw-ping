@@ -22,11 +22,11 @@
 #include "network.h"
 
 // const of args
-const char *argp_program_version = "v1.0";
+const char *argp_program_version = "v1.1";
 const char *argp_program_bug_address = "<cjyeh@cs.nctu.edu.tw>";
 
 // documents of program
-static char doc[] = "\nping";
+static char doc[] = "\nraw-ping";
 static char args_doc[] = "";
 
 // options of arguments
