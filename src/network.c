@@ -74,6 +74,7 @@ int get_ip_proto(struct ip *self) {
 }
 
 void set_ip_check(struct ip *self) {
+  self->ip_sum = 0;
   self->ip_sum = checksum((uint16_t *) self, self->ip_hl * 4);
 }
 
