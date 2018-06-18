@@ -39,6 +39,7 @@ static struct argp_option options[] = {
   { "size", 's', "N", 0, "set packet size" },
   { "ttl", 't', "N", 0, "set time to live field in IP" },
   { "verbose", 'v', 0, 0, "produce verbose output" },
+  { "timeout", 'W', "N", 0, "timeout in second" },
   { "help", 'h', 0, 0, "show help information" },
   { 0 }
 };
@@ -49,6 +50,7 @@ struct arguments {
   int size;
   int tos;
   int ttl;
+  int timeout;
   double interval;
   char *interface;
   char *source;
@@ -63,6 +65,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   switch (key) {
     case 'c':
       arguments->count = atoi(arg);
+      break;
+    case 'h':
+      argp_state_help(state, stdout, ARGP_HELP_STD_HELP);
       break;
     case 'i':
       arguments->interval = atof(arg);
@@ -79,8 +84,8 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     case 't':
       arguments->ttl = atoi(arg);
       break;
-    case 'h':
-      argp_state_help(state, stdout, ARGP_HELP_STD_HELP);
+    case 'W':
+      arguments->timeout = atoi(arg);
       break;
     case ARGP_KEY_ARG:
       // too many arguments
@@ -139,6 +144,7 @@ int main(int argc, char **argv) {
   // set default arguments val
   arguments.count = INT_MAX;
   arguments.interval = 1;
+  arguments.timeout = 2;
   arguments.interface = NULL;
   arguments.size = 56;
   arguments.ttl = 64;
@@ -227,7 +233,7 @@ int main(int argc, char **argv) {
   set_icmp_id(send_icmph, 1000);
 
   // set timeout for socket
-  wait.tv_sec = 2;
+  wait.tv_sec = arguments.timeout;
   wait.tv_usec = 0;
 
   setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO,
