@@ -173,7 +173,8 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, arguments.interface, strlen(arguments.interface)) < 0) {
+  if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE,
+    arguments.interface, strlen(arguments.interface)) < 0) {
     perror("setsockopt()");
     exit(EXIT_FAILURE);
   }
@@ -247,7 +248,8 @@ int main(int argc, char **argv) {
     set_icmp_seq(send_icmph, i);
     set_icmp_sum(send_icmph, arguments.size);
 
-    if ((bytes = sendto(fd, request, IP_HDR_LEN + arguments.size, 0, (struct sockaddr *) &dev, sizeof(dev))) <= 0) {
+    if ((bytes = sendto(fd, request, IP_HDR_LEN + arguments.size, 0,
+      (struct sockaddr *) &dev, sizeof(dev))) <= 0) {
       perror("sendto()");
       exit(EXIT_FAILURE);
     }
