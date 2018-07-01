@@ -33,6 +33,7 @@ static char args_doc[] = "";
 static struct argp_option options[] = {
   { "count", 'c', "N", 0, "count of probing packets" },
   { "debug", 'd', 0, 0, "show debug message" },
+  { "file", 'f', "FILE", 0, "redirect stdout to file" },
   { "interval", 'i', "N", 0, "seconds between periodic ICMP packets" },
   { "interface", 'I', "INTERFACE", 0, "bind to specified interface" },
   { "tos", 'Q', "N", 0, "set type of service field in IP" },
@@ -52,6 +53,7 @@ struct arguments {
   int ttl;
   int timeout;
   double interval;
+  char *file;
   char *interface;
   char *source;
   char *destination;
@@ -65,6 +67,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
   switch (key) {
     case 'c':
       arguments->count = atoi(arg);
+      break;
+    case 'f':
+      arguments->file = arg;
       break;
     case 'h':
       argp_state_help(state, stdout, ARGP_HELP_STD_HELP);
@@ -115,6 +120,7 @@ static struct argp argp = {
 int main(int argc, char **argv) {
   // variables
   int fd;
+  int fp;
   int bytes;
   int status = 0;
   const int on = 1;
@@ -143,6 +149,7 @@ int main(int argc, char **argv) {
 
   // set default arguments val
   arguments.count = INT_MAX;
+  arguments.file = NULL;
   arguments.interval = 1;
   arguments.timeout = 2;
   arguments.interface = NULL;
@@ -152,6 +159,14 @@ int main(int argc, char **argv) {
 
   // parse arguments
   argp_parse(&argp, argc, argv, 0, 0, &arguments);
+
+  if (arguments.file != NULL) {
+    if ((fp = open(arguments.file,  O_CREAT|O_TRUNC|O_WRONLY, 0644)) < 0) {
+      perror("open()\n");
+      exit(EXIT_FAILURE);
+    }
+    dup2(fp, 1);
+  }
 
   request = allocate_ustrmem(IP_MAXPACKET);
   reply = allocate_ustrmem(IP_MAXPACKET);
