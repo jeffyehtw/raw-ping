@@ -315,7 +315,7 @@ int main(int argc, char **argv) {
       }
     }
 
-    if (status != EAGAIN) {
+    if (bytes != -1 || status != EAGAIN) {
       min_rtt = dt < min_rtt ? dt : min_rtt;
       max_rtt = dt > max_rtt ? dt : max_rtt;
 

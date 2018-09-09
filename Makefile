@@ -1,4 +1,5 @@
 CC = gcc
+# CC = arm-linux-gnueabi-gcc
 CFLAGS = -std=gnu11 -Wall -I include
 TARGET = \
 	src/main.c \
